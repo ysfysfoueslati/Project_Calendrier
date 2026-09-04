@@ -1,0 +1,1 @@
+Executez le fichier database/events.sql avant de lancer le projet.
