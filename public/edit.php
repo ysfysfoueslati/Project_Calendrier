@@ -1,18 +1,25 @@
 <?php
-use src\Calendar\Events;
-require_once('../src/Calendar/Events.php');
+
+use App\Validator;
+use Calendar\Events;
 require_once('../src/boostrap.php');
-require_once('../src/Calendar/event.php');
-$pdo=get_pdo();
-$event = new Calendar\Events($pdo);
-$errors=[];
+require_once('../src/App/Validator.php');
+require_once('../src/Calendar/EventValidator.php');
+require_once('../src/Calendar/Event.php');
+require_once('../src/Calendar/Events.php');
+
+$pdo = get_pdo();
+$events = new Calendar\Events($pdo);
+$errors = [];
+
 try{
-    $event = $event->find($_GET['id'] ?? null);
+    $event = $events->find($_GET['id'] ?? null);
 } catch(\Exception $e){
     e404();
 } catch(\Error $e){
     e404();
 }
+
 $data=[
     'name'=>$event->getName(),
     'date'=>$event->getStart()->format('Y-m-d'),
@@ -20,7 +27,6 @@ $data=[
     'end'=>$event->getEnd()->format('H:i'),
     'description'=>$event->getDescription()
 ];
-
 
 if ($_SERVER['REQUEST_METHOD']==='POST'){
     $data=$_POST;
@@ -34,7 +40,7 @@ if ($_SERVER['REQUEST_METHOD']==='POST'){
     }
 }
 
-render('header',['title=>$event->getName()']);
+render('header',['title' => $event->getName()]);
 ?>
 <div class="container">
     <h1>Editer l'evenement <small><?= h($event->getName());?></small></h1>
